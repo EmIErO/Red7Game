@@ -68,7 +68,7 @@ public class Red7Rules {
     public String evenNumWin(List<Player> players) {
 
         Map<Integer, List<Player>> result = players.stream()
-                .map(player -> factory.filterEvenCards(player))
+                .map(player -> factory.filterCards(player, factory.evenCards))
                 .collect(Collectors.groupingBy(Player::getPalleteSize));
 
         Optional<Map.Entry<Integer, List<Player>>> optional = result.entrySet().stream()
