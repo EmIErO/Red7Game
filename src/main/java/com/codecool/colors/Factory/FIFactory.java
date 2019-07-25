@@ -23,7 +23,9 @@ public class FIFactory {
     }
     public Function<Card, String> cardNumber = card -> String.valueOf(card.getNumber());
     public Function<Card, String> cardColor = card -> card.getColor();
-
+    Function<List<Card>, Card> highestCard = list -> list.stream()
+                                                        .max(Comparator.comparing(Card::getNumber))
+                                                        .get();
 
     public Collector<? super List<Card>, ArrayList<Card>, ArrayList<Card>> getCustomCardCollector() {
         return Collector.of(
@@ -46,19 +48,18 @@ public class FIFactory {
 
     Function<Map<Integer, List<Card>>, Integer> func = map -> map.entrySet().size();
 
-    public Player filterBestSetOfCardsBy(Function<Card, String> function,Player player) {
+    public Player filterBestSetOfCardsBy(Function<Card, String> rule,Player player) {
 
-        Map<String, List<Card>> filteredPallete = player.getPalette().stream()
-                .collect(Collectors.groupingBy(function));
+        Map<String, List<Card>> sortedPallete = sortPalleteBy(rule, player);
 
-        OptionalInt optional = filteredPallete.entrySet().stream()
+        OptionalInt optional = sortedPallete.entrySet().stream()
                 .mapToInt(entrySet -> entrySet.getValue().size())
                 .max();
 
         int maxNumOfSameCards = optional.getAsInt();
         int firstElement = 0;
 
-        List<List<Card>> candidateCardSets = filteredPallete.entrySet().stream()
+        List<List<Card>> candidateCardSets = sortedPallete.entrySet().stream()
                 .filter(entrySet -> entrySet.getValue().size() == maxNumOfSameCards)
                 .map(entrySet -> entrySet.getValue())
                 .sorted(Comparator.comparing(element -> element.get(firstElement).getNumber()))
@@ -74,6 +75,27 @@ public class FIFactory {
         return player;
     }
 
-   
+    public Map<String, List<Card>> sortPalleteBy(Function<Card, String> rule, Player player) {
+        return player.getPalette().stream()
+                .collect(Collectors.groupingBy(rule));
+    }
+
+    public Player setCardsWithDifferentColors(Player player) {
+        Map<String, List<Card>> sortedCards = sortPalleteBy(cardColor, player);
+        if (player.getPalette().size() == sortedCards.size()) {
+            return player;
+        }
+        List<Card> newCardSet = sortedCards.entrySet().stream()
+                .map(entrySet -> entrySet.getValue())
+                .map(highestCard)
+                .collect(Collectors.toList());
+        player.setPalette(newCardSet);
+        return player;
+    }
+
+    public Optional<Player> choosePlayerWithHighestCard(List<Player> players) {
+        return players.stream()
+                .max(Comparator.comparing(Player::getHighest));
+    }
 
 }

@@ -48,21 +48,18 @@ public class Red7Rules {
                                                             new Card(4, "green"),
                                                             new Card(8, "red"),
                                                             new Card(8, "yellow"),
-                                                            new Card(3, "red")));
+                                                            new Card(3, "green")));
         List<Card> cards2 = new ArrayList<>(Arrays.asList(new Card(8, "green"), new Card(8, "orange")));
         Player player1 = new Player("Ania", cards1);
         Player player2 = new Player("Mira", cards2);
         List<Player> players = new ArrayList<>(Arrays.asList(player1, player2));
         Red7Rules r7r = new Red7Rules();
         r7r.setFactory(new FIFactory());
-        System.out.println(r7r.sameNumWin(players));
 
     }
 
     public String highestCardWin(List<Player> players) {
-        Optional<Player> player = players
-                .stream()
-                .max(Comparator.comparing(Player::getHighest));
+        Optional<Player> player = filter.choosePlayerWithHighestCard(players);
 
         return player.get().getName();
     }
@@ -136,7 +133,13 @@ public class Red7Rules {
     }
 
     public String diffColorWin(List<Player> players) {
-        return "Mira";
+        List<Player> filteredPlayer = players.stream()
+                .map(player -> filter.setCardsWithDifferentColors(player))
+                .collect(Collectors.toList());
+        Map<Integer, List<Player>> result = filteredPlayer.stream()
+                .collect(Collectors.groupingBy(Player::getPalleteSize));
+
+        return chooseWinner(result);
     }
 
     public String nextNumWin(List<Player> players) {

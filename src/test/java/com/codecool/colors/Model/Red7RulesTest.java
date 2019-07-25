@@ -237,5 +237,43 @@ public class Red7RulesTest {
 
         assertEquals(expected, actual);
     }
+    //Testing diffColorWin() method
+    @Test
+    public void whenDiffNumOfDiffColorCards_thenPlayerWithMoreCardsWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(1, "red"),
+                new Card(1, "yellow"),
+                new Card(2, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "orange"),
+                new Card(1, "red"),
+                new Card(4, "red"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 5, "yellow"),
+                new Card(1, "red"),
+                new Card(6, "yellow"))));
 
+        String expected = "Player1Name";
+        String actual = r7r.diffColorWin(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenSameNumOfDiffColorCards_thenPlayerWithHighestCardWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(1, "red"),
+                new Card(2, "red"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "orange"),
+                new Card(4, "orange"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 5, "yellow"),
+                new Card(6, "yellow"))));
+
+        String expected = "Player3Name";
+        String actual = r7r.diffColorWin(players);
+
+        assertEquals(expected, actual);
+    }
 }
