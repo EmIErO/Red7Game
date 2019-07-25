@@ -32,17 +32,17 @@ public class Red7RulesTest {
 
     // Testing evenNumWin() method
     @Test
-    public void whenDiffNumOfEvenCards_thenPlayerWithMoreEvenCardsWin() {
+    public void whenDiffNumOfEvenCards_thenPlayerWithMoreCardsWin() {
         players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short)4, "red"),
-                new Card((short)2, "yellow"))));
+                new Card(4, "red"),
+                new Card(2, "yellow"))));
         players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short)4, "yellow"),
-                new Card((short)1, "red"),
-                new Card((short) 3, "green"),
-                new Card((short) 5, "green"))));
+                new Card(4, "yellow"),
+                new Card(1, "red"),
+                new Card( 3, "green"),
+                new Card( 5, "green"))));
         players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short)8, "yellow"))));
+                new Card(8, "yellow"))));
 
         String expected = "Player1Name";
         String actual = r7r.evenNumWin(players);
@@ -53,11 +53,11 @@ public class Red7RulesTest {
     @Test
     public void whenSameNumOfEvenCards_thenPlayerWithHigherCardWins() {
         players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short)2, "red"))));
+                new Card(2, "red"))));
         players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short) 2, "green"))));
-        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short) 3, "red"))));
+                new Card( 2, "green"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "red"))));
 
         String expected = "Player1Name";
         String actual = r7r.evenNumWin(players);
@@ -68,15 +68,120 @@ public class Red7RulesTest {
     @Test
     public void whenNoNumOfEvenCards_thenNullIsReturned() {
         players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short)1, "red"))));
+                new Card(1, "red"))));
         players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short) 1, "green"))));
-        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
-                new Card((short) 1, "yellow"))));
+                new Card( 1, "green"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 1, "yellow"))));
 
         String expected = null;
         String actual = r7r.evenNumWin(players);
 
         assertEquals(expected, actual);
     }
+    //Testing numBelow4Win() method
+    @Test
+    public void whenDiffNumOfLowerThan4Cards_thenPlayerWithMoreCardsWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(1, "red"),
+                new Card(2, "yellow"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(1, "yellow"),
+                new Card(2, "red"),
+                new Card( 3, "green"),
+                new Card( 5, "green"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(3, "yellow"))));
+
+        String expected = "Player2Name";
+        String actual = r7r.numLowerThan4Win(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenSameNumOfLowerThan4Cards_thenPlayerWithHigherCardWins() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(2, "red"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 2, "green"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "red"))));
+
+        String expected = "Player3Name";
+        String actual = r7r.numLowerThan4Win(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenNoNumOfLowerThan4Cards_thenNullIsReturned() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(4, "red"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "green"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "yellow"))));
+
+        String expected = null;
+        String actual = r7r.numLowerThan4Win(players);
+
+        assertEquals(expected, actual);
+    }
+
+    //Testing sameNumWin() method
+    @Test
+    public void whenDiffNumOfSameNumCards_thenPlayerWithMoreCardsWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(4, "red"),
+                new Card(4, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "orange"),
+                new Card(8, "red"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 7, "yellow"),
+                new Card(6, "yellow"))));
+
+        String expected = "Player1Name";
+        String actual = r7r.sameNumWin(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenSameNumOfSameNumCards_thenPlayerWithHighestCardWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(4, "red"),
+                new Card(4, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "orange"),
+                new Card(4, "yellow"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "yellow"),
+                new Card(3, "red"))));
+
+        String expected = "Player1Name";
+        String actual = r7r.sameNumWin(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenNoNumOfSameNumCards_thenPlayerWithHighestCardWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(1, "red"),
+                new Card(2, "green"),
+                new Card(3, "red"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "orange"),
+                new Card(5, "yellow"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(6, "red"))));
+
+        String expected = "Player3Name";
+        String actual = r7r.sameNumWin(players);
+
+        assertEquals(expected, actual);
+    }
+
 }

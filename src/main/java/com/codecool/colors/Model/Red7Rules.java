@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Red7Rules {
@@ -22,9 +23,9 @@ public class Red7Rules {
             r7rules.put("orange", Red7Rules.class.getDeclaredMethod("sameNumWin", new Class[]{List.class}));
             r7rules.put("yellow", Red7Rules.class.getMethod("sameColorWin", new Class[]{List.class}));
             r7rules.put("green", Red7Rules.class.getDeclaredMethod("evenNumWin", new Class[]{List.class}));
-            r7rules.put("blue", Red7Rules.class.getMethod("diffColourWin", new Class[]{List.class}));
+            r7rules.put("blue", Red7Rules.class.getMethod("diffColorWin", new Class[]{List.class}));
             r7rules.put("indigo", Red7Rules.class.getMethod("nextNumWin", new Class[]{List.class}));
-            r7rules.put("violet", Red7Rules.class.getMethod("numBelow4Win", new Class[]{List.class}));
+            r7rules.put("violet", Red7Rules.class.getMethod("numLowerThan4Win", new Class[]{List.class}));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -42,15 +43,19 @@ public class Red7Rules {
     }
 
     public static void main(String[] args) {
-        List<Card> cards1 = new ArrayList<>(Arrays.asList(new Card((short)4, "red"), new Card((short)1, "red")));
-        List<Card> cards2 = new ArrayList<>(Arrays.asList(new Card((short)4, "yellow"), new Card((short)3, "green")));
+        List<Card> cards1 = new ArrayList<>(Arrays.asList(new Card(4, "red"),
+                                                            new Card(4, "green"),
+                                                            new Card(8, "red"),
+                                                            new Card(8, "yellow"),
+                                                            new Card(3, "red")));
+        List<Card> cards2 = new ArrayList<>(Arrays.asList(new Card(8, "green"), new Card(8, "orange")));
         Player player1 = new Player("Ania", cards1);
         Player player2 = new Player("Mira", cards2);
         List<Player> players = new ArrayList<>(Arrays.asList(player1, player2));
         Red7Rules r7r = new Red7Rules();
         r7r.setFactory(new FIFactory());
-        String winner = r7r.evenNumWin(players);
-        System.out.println("The winner is: " + winner + "!");
+        System.out.println(r7r.sameNumWin(players));
+
     }
 
     public String highestCardWin(List<Player> players) {
@@ -62,15 +67,33 @@ public class Red7Rules {
     }
 
     public String sameNumWin(List<Player> players) {
-        return "Mira wins!";
+
+        List<Player> playerWithBestCardSets = players.stream()
+                .map(player -> factory.filterHighestSetOfCardsWithSameNum(player))
+                .collect(Collectors.toList());
+        Map<Integer, List<Player>> result = players.stream()
+                .collect(Collectors.groupingBy(Player::getPalleteSize));
+
+        return chooseWinner(result);
     }
 
     public String evenNumWin(List<Player> players) {
+        Map<Integer, List<Player>> result = filterPlayers(players, factory.evenCards);
+        return chooseWinner(result);
+    }
 
-        Map<Integer, List<Player>> result = players.stream()
-                .map(player -> factory.filterCards(player, factory.evenCards))
+    public String numLowerThan4Win(List<Player> players) {
+        Map<Integer, List<Player>> result = filterPlayers(players, factory.lowerThan4Cards);
+        return chooseWinner(result);
+    }
+
+    private Map<Integer, List<Player>> filterPlayers(List<Player> players, Predicate<Card> rule) {
+        return players.stream()
+                .map(player -> factory.filterCards(player, rule))
                 .collect(Collectors.groupingBy(Player::getPalleteSize));
+    }
 
+    private String chooseWinner(Map<Integer, List<Player>> result) {
         Optional<Map.Entry<Integer, List<Player>>> optional = result.entrySet().stream()
                 .filter(es -> es.getKey() != 0)
                 .max(Comparator.comparing(es -> es.getKey()));
@@ -104,7 +127,7 @@ public class Red7Rules {
         return "Mira";
     }
 
-    public String diffColourWin(List<Player> players) {
+    public String diffColorWin(List<Player> players) {
         return "Mira";
     }
 
@@ -112,10 +135,6 @@ public class Red7Rules {
         return "Mira";
     }
 
-    public String numBelow4Win(List<Player> players) {
 
-
-        return "Ania";
-    }
 
 }

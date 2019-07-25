@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Card implements Comparable<Card>{
-    private short number;
+    private int number;
     private String color;
 
     public static Map<String, Integer> colorMap = new HashMap<>();
@@ -21,16 +21,16 @@ public class Card implements Comparable<Card>{
 
     public Card() {}
 
-    public Card(Short number, String color) {
+    public Card(int number, String color) {
         this.number = number;
         this.color = color;
     }
 
-    public Short getNumber() {
+    public int getNumber() {
         return number;
     }
 
-    public void setNumber(Short number) {
+    public void setNumber(int number) {
         this.number = number;
     }
 
