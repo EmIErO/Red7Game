@@ -21,6 +21,9 @@ public class FIFactory {
                 .filter(evenCards)
                 .collect(Collectors.toList());
     }
+    public Function<Card, String> cardNumber = card -> String.valueOf(card.getNumber());
+    public Function<Card, String> cardColor = card -> card.getColor();
+
 
     public Collector<? super List<Card>, ArrayList<Card>, ArrayList<Card>> getCustomCardCollector() {
         return Collector.of(
@@ -43,10 +46,10 @@ public class FIFactory {
 
     Function<Map<Integer, List<Card>>, Integer> func = map -> map.entrySet().size();
 
-    public Player filterHighestSetOfCardsWithSameNum(Player player) {
+    public Player filterBestSetOfCardsBy(Function<Card, String> function,Player player) {
 
-        Map<Integer, List<Card>> filteredPallete = player.getPalette().stream()
-                .collect(Collectors.groupingBy(Card::getNumber));
+        Map<String, List<Card>> filteredPallete = player.getPalette().stream()
+                .collect(Collectors.groupingBy(function));
 
         OptionalInt optional = filteredPallete.entrySet().stream()
                 .mapToInt(entrySet -> entrySet.getValue().size())
@@ -70,5 +73,7 @@ public class FIFactory {
 
         return player;
     }
+
+   
 
 }

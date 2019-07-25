@@ -183,5 +183,59 @@ public class Red7RulesTest {
 
         assertEquals(expected, actual);
     }
+    //Testing sameColorWin() method
+    @Test
+    public void whenDiffNumOfSameColorCards_thenPlayerWithMoreCardsWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(1, "red"),
+                new Card(2, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "orange"),
+                new Card(4, "red"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 5, "yellow"),
+                new Card(6, "yellow"))));
+
+        String expected = "Player3Name";
+        String actual = r7r.sameColorWin(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenSameNumOfSameColorCards_thenPlayerWithHighestCardWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(6, "red"),
+                new Card(5, "red"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "orange"),
+                new Card(3, "orange"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 2, "yellow"),
+                new Card(1, "yellow"))));
+
+        String expected = "Player1Name";
+        String actual = r7r.sameColorWin(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenNoNumOfSameColorCards_thenPlayerWithHighestCardWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(1, "red"),
+                new Card(2, "green"),
+                new Card(3, "yellow"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 6, "red"),
+                new Card(5, "yellow"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(6, "green"))));
+
+        String expected = "Player2Name";
+        String actual = r7r.sameNumWin(players);
+
+        assertEquals(expected, actual);
+    }
 
 }

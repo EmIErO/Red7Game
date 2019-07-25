@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -12,7 +13,7 @@ public class Red7Rules {
 
     public static final int FIRST = 0;
     @Autowired
-    private FIFactory factory;
+    private FIFactory filter;
 
     public static Map<String, Method> r7rules;
 
@@ -34,12 +35,12 @@ public class Red7Rules {
     public Red7Rules() {
     }
 
-    public Red7Rules(FIFactory factory) {
-        this.factory = factory;
+    public Red7Rules(FIFactory filter) {
+        this.filter = filter;
     }
 
-    public void setFactory(FIFactory factory) {
-        this.factory = factory;
+    public void setFactory(FIFactory filter) {
+        this.filter = filter;
     }
 
     public static void main(String[] args) {
@@ -68,28 +69,38 @@ public class Red7Rules {
 
     public String sameNumWin(List<Player> players) {
 
-        List<Player> playerWithBestCardSets = players.stream()
-                .map(player -> factory.filterHighestSetOfCardsWithSameNum(player))
-                .collect(Collectors.toList());
-        Map<Integer, List<Player>> result = players.stream()
-                .collect(Collectors.groupingBy(Player::getPalleteSize));
+        Map<Integer, List<Player>> result = filterCardsWithSame(filter.cardNumber, players);
 
         return chooseWinner(result);
     }
 
+    public String sameColorWin(List<Player> players) {
+        Map<Integer, List<Player>> result = filterCardsWithSame(filter.cardColor, players);
+        return chooseWinner(result);
+    }
+
+    private Map<Integer, List<Player>> filterCardsWithSame(Function<Card, String> rule, List<Player> players) {
+        List<Player> playerWithBestCardSets = players.stream()
+                .map(player -> filter.filterBestSetOfCardsBy(rule, player))
+                .collect(Collectors.toList());
+        return playerWithBestCardSets.stream()
+                .collect(Collectors.groupingBy(Player::getPalleteSize));
+    }
+
+
     public String evenNumWin(List<Player> players) {
-        Map<Integer, List<Player>> result = filterPlayers(players, factory.evenCards);
+        Map<Integer, List<Player>> result = filterPlayers(players, filter.evenCards);
         return chooseWinner(result);
     }
 
     public String numLowerThan4Win(List<Player> players) {
-        Map<Integer, List<Player>> result = filterPlayers(players, factory.lowerThan4Cards);
+        Map<Integer, List<Player>> result = filterPlayers(players, filter.lowerThan4Cards);
         return chooseWinner(result);
     }
 
     private Map<Integer, List<Player>> filterPlayers(List<Player> players, Predicate<Card> rule) {
         return players.stream()
-                .map(player -> factory.filterCards(player, rule))
+                .map(player -> filter.filterCards(player, rule))
                 .collect(Collectors.groupingBy(Player::getPalleteSize));
     }
 
@@ -101,6 +112,7 @@ public class Red7Rules {
         if (noOneWon(optional)) {
             return null;
         }
+
         if (isDraw(optional)) {
             return highestCardWin(extractPlayers(optional));
         }
@@ -121,10 +133,6 @@ public class Red7Rules {
 
     private String extractWinnerName(Optional<Map.Entry<Integer, List<Player>>> optional) {
         return optional.get().getValue().get(FIRST).getName();
-    }
-
-    public String sameColorWin(List<Player> players) {
-        return "Mira";
     }
 
     public String diffColorWin(List<Player> players) {
