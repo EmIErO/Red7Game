@@ -2,6 +2,7 @@ package com.codecool.colors.Model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Card implements Comparable<Card>{
     private int number;
@@ -24,6 +25,10 @@ public class Card implements Comparable<Card>{
     public Card(int number, String color) {
         this.number = number;
         this.color = color;
+    }
+
+    public Card(Card that) {
+        this(that.getNumber(), that.getColor());
     }
 
     public int getNumber() {
@@ -53,6 +58,14 @@ public class Card implements Comparable<Card>{
         return this.number-card.getNumber();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Card)) return false;
+        Card card = (Card) o;
+        return number == card.number &&
+                Objects.equals(color, card.color);
+    }
 
     @Override
     public String toString() {

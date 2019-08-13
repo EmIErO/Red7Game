@@ -25,7 +25,7 @@ public class Red7Rules {
             r7rules.put("yellow", Red7Rules.class.getMethod("sameColorWin", new Class[]{List.class}));
             r7rules.put("green", Red7Rules.class.getDeclaredMethod("evenNumWin", new Class[]{List.class}));
             r7rules.put("blue", Red7Rules.class.getMethod("diffColorWin", new Class[]{List.class}));
-            r7rules.put("indigo", Red7Rules.class.getMethod("nextNumWin", new Class[]{List.class}));
+            r7rules.put("indigo", Red7Rules.class.getMethod("runNumWin", new Class[]{List.class}));
             r7rules.put("violet", Red7Rules.class.getMethod("numLowerThan4Win", new Class[]{List.class}));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -133,16 +133,20 @@ public class Red7Rules {
     }
 
     public String diffColorWin(List<Player> players) {
-        List<Player> filteredPlayer = players.stream()
-                .map(player -> filter.setCardsWithDifferentColors(player))
+        List<Player> filteredPlayers = players.stream()
+                .map(player -> filter.setCardsWithDifferent(filter.cardColor, player))
                 .collect(Collectors.toList());
-        Map<Integer, List<Player>> result = filteredPlayer.stream()
+        Map<Integer, List<Player>> result = filteredPlayers.stream()
                 .collect(Collectors.groupingBy(Player::getPalleteSize));
 
         return chooseWinner(result);
     }
 
-    public String nextNumWin(List<Player> players) {
+    public String runNumWin(List<Player> players) {
+        List<Player> filteredPlayers = players.stream()
+                .map(player -> filter.setCardsWithDifferent(filter.cardNumber, player))
+                .collect(Collectors.toList());
+
         return "Mira";
     }
 

@@ -13,7 +13,6 @@ public class FIFactory {
 
     public Predicate<Card> evenCards = card -> card.getNumber() % 2 == 0;
     public Predicate<Card> lowerThan4Cards = card -> card.getNumber() < 4;
-    public Predicate<Card> all = card -> card instanceof Card;
 
     public Function<Player, List<Card>> getEvenCards() {
         return player -> player.getPalette()
@@ -80,8 +79,8 @@ public class FIFactory {
                 .collect(Collectors.groupingBy(rule));
     }
 
-    public Player setCardsWithDifferentColors(Player player) {
-        Map<String, List<Card>> sortedCards = sortPalleteBy(cardColor, player);
+    public Player setCardsWithDifferent(Function<Card, String> rule, Player player) {
+        Map<String, List<Card>> sortedCards = sortPalleteBy(rule, player);
         if (player.getPalette().size() == sortedCards.size()) {
             return player;
         }
@@ -96,6 +95,40 @@ public class FIFactory {
     public Optional<Player> choosePlayerWithHighestCard(List<Player> players) {
         return players.stream()
                 .max(Comparator.comparing(Player::getHighest));
+    }
+
+    public Player setCardRun(Player player) {
+        List<Card> pallete = player.getPalette().stream()
+                .sorted(Comparator.comparing(Card::getNumber))
+                .collect(Collectors.toList());
+
+        Map<Integer, List<List<Card>>> runs = new HashMap<>();
+        List<Card> temp = new ArrayList<>();
+        temp.add(pallete.get(0));
+        for (int i = 1; i < pallete.size(); i++) {
+            Card lastCard = pallete.get(i - 1);
+            Card currentCard = pallete.get(i);
+            if (isGreaterByOne(currentCard, lastCard)) {
+                temp.add(currentCard);
+            } else {
+                List<Card> copy = new ArrayList<>(temp);
+                if (runs.containsKey(copy.size())) {
+                    runs.get(copy.size()).add(temp);
+                }
+                List<List<Card>> list = new ArrayList<>();
+                list.add(copy);
+                runs.put(temp.size(), list);
+            }
+
+        }
+        return null;
+    }
+
+    private boolean isGreaterByOne(Card bigger, Card smaller) {
+        if (bigger.getNumber() - smaller.getNumber() == 1) {
+            return true;
+        }
+        return false;
     }
 
 }

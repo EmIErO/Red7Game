@@ -3,10 +3,7 @@ package com.codecool.colors.Model;
 import com.codecool.colors.Factory.FIFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Player {
@@ -19,6 +16,14 @@ public class Player {
     public Player(String name, List<Card> palette) {
         this.name = name;
         this.palette = palette;
+    }
+
+    public Player(Player that) {
+        List<Card> copyOfPallete = that.getPalette().stream()
+                .map(Card::new)
+                .collect(Collectors.toList());
+        this.name = that.getName();
+        this.palette = copyOfPallete;
     }
 
     public String getName() {
