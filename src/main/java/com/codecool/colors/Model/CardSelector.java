@@ -1,11 +1,60 @@
 package com.codecool.colors.Model;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class CardSelector {
 
+
     public CardSelector() {
+    }
+
+    public List<Card> selectBestSetOfCardsWithSameRank(Player player) {
+        Player playerCopy = new Player(player);
+        Collections.sort(playerCopy.getPalette());
+
+        Map<Integer, List<Card>> result = playerCopy.getPalette().stream()
+                .collect(Collectors.groupingBy(Card::getNumber));
+
+        return selectBestSet(result);
+    }
+
+    public List<Card> selectBestSetOfCardsWithSameColor(Player player) {
+        Player playerCopy = new Player(player);
+        Collections.sort(player.getPalette());
+
+        Map<Integer, List<Card>> result = playerCopy.getPalette().stream()
+                .collect(Collectors.groupingBy(card -> Card.colorMap.get(card.getColor())));
+
+        return selectBestSet(result);
+    }
+
+    List<Card> selectBestSetOfCardsWithDifferentColor(Player player) {
+        Player playerCopy = new Player(player);
+        Collections.sort(player.getPalette());
+
+        Map<String, List<Card>> result = playerCopy.getPalette().stream()
+                .collect(Collectors.groupingBy(Card::getColor));
+
+        List<Card> bestSet = result.entrySet().stream()
+                .map(entrySet -> {
+                    List<Card> cards = entrySet.getValue();
+                    Collections.sort(cards);
+                    return cards.get(cards.size() - 1);
+                })
+                .collect(Collectors.toList());
+        return bestSet;
+    }
+
+    private List<Card> selectBestSet(Map<Integer, List<Card>> result) {
+        List<Card> bestSameRankSet = result.entrySet().stream()
+                .sorted(Comparator.comparing(entrySet -> entrySet.getKey()))
+                .map(entrySet -> entrySet.getValue())
+                .reduce((first, second) -> second)
+                .orElse(new ArrayList<>());
+
+        return bestSameRankSet;
     }
 
     public List<Card> selectBestRun(Player player) {
@@ -84,4 +133,11 @@ public class CardSelector {
         CardSelector cs = new CardSelector();
         cs.selectBestRun(player1);
     }
+
+    static Function<Player, Card> highestCard = player -> {
+        Collections.sort(player.getPalette());
+        return player.getPalette().get(player.getPalette().size() - 1);
+    };
+
+
 }

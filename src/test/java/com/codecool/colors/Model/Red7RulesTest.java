@@ -28,6 +28,8 @@ public class Red7RulesTest {
         Player player3 = new Player("Player3Name", cards3);
 
         players = new ArrayList<>(Arrays.asList(player1, player2, player3));
+
+        r7r.setFii(new FuncInterfacesImpl(new CardSelector()));
     }
 
     // Testing evenNumWin() method
@@ -273,6 +275,162 @@ public class Red7RulesTest {
 
         String expected = "Player3Name";
         String actual = r7r.diffColorWin(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenDiffNumOfCardsInPlayByIndigoRule_thenPlayerWithMostCardsWins() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(8, "red"),
+                new Card(2, "yellow"),
+                new Card(3, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "orange"),
+                new Card(1, "red"),
+                new Card(4, "red"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 5, "yellow"),
+                new Card(7, "red"),
+                new Card(6, "yellow"))));
+
+        String expected = "Player3Name";
+        String actual = r7r.playByIndigoRule(players);
+
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
+    public void whenDiffNumOfCardsInPlayByGreenRule_thenPlayerWithMostCardsWins() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(8, "red"),
+                new Card(2, "yellow"),
+                new Card(3, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "orange"),
+                new Card(1, "red"),
+                new Card(4, "red"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 5, "yellow"),
+                new Card(7, "red"),
+                new Card(6, "yellow"))));
+
+        String expected = "Player1Name";
+        String actual = r7r.playByGreenRule(players);
+
+        assertEquals(expected, actual);
+
+    }
+
+    @Test
+    public void whenDiffNumOfSameRankedCards_thenPlayerWithMoreCardsWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(4, "red"),
+                new Card(4, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "orange"),
+                new Card(8, "red"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 7, "yellow"),
+                new Card(6, "yellow"))));
+
+        String expected = "Player1Name";
+        String actual = r7r.playByOrangeRule(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenSameNumOfSameRankedCards_thenPlayerWithHighestCardWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(4, "orange"),
+                new Card(4, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "red"),
+                new Card(4, "yellow"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "yellow"),
+                new Card(3, "red"))));
+
+        String expected = "Player2Name";
+        String actual = r7r.playByOrangeRule(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenDiffNumOfCardsWithSameColor_thenPlayerWithMoreCardsWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(1, "red"),
+                new Card(2, "green"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 3, "orange"),
+                new Card(4, "red"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 5, "yellow"),
+                new Card(6, "yellow"))));
+
+        String expected = "Player3Name";
+        String actual = r7r.playByYellowRule(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenSameNumOfCardsWithSameColor_thenPlayerWithHighestCardWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(6, "red"),
+                new Card(5, "red"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 4, "orange"),
+                new Card(3, "orange"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card( 2, "yellow"),
+                new Card(1, "yellow"))));
+
+        String expected = "Player1Name";
+        String actual = r7r.playByYellowRule(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenDiffNumOfCardsWithDifferentColor_thenPlayerWithMostCardsWin() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(4, "red"),
+                new Card(2, "yellow"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(4, "yellow"),
+                new Card(1, "red"),
+                new Card( 3, "green"),
+                new Card( 5, "green"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(8, "yellow"))));
+
+        String expected = "Player2Name";
+        String actual = r7r.playByBlueRule(players);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void whenSameNumOfCardsWithDifferentColor_thenPlayerWithHigherCardWins() {
+        players.get(firstPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(9, "red"),
+                new Card(2, "yellow"))));
+        players.get(secondPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(4, "yellow"),
+                new Card(1, "yellow"),
+                new Card( 3, "green"),
+                new Card( 5, "green"))));
+        players.get(thirdPlayer).setPalette(new ArrayList<>(Arrays.asList(
+                new Card(9, "yellow"),
+                new Card(9, "blue"),
+                new Card(8, "yellow"))));
+
+        String expected = "Player1Name";
+        String actual = r7r.playByBlueRule(players);
 
         assertEquals(expected, actual);
     }

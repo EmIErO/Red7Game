@@ -15,6 +15,7 @@ public class Player {
 
     public Player(String name, List<Card> palette) {
         this.name = name;
+        Collections.sort(palette);
         this.palette = palette;
     }
 
@@ -39,6 +40,7 @@ public class Player {
     }
 
     public void setPalette(List<Card> palette) {
+        Collections.sort(palette);
         this.palette = palette;
     }
 
