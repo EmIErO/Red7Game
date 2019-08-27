@@ -1,31 +1,19 @@
 package com.codecool.colors.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
-public class Game {
+public class GameState {
     private List<Card> canvas;
     private List<Player> players;
-    private Red7Rules rules;
 
+    public GameState(){}
 
-    public Game(){}
-
-    public Game(List<Card> canvas, List<Player> players) {
+    @Autowired
+    public GameState(List<Card> canvas, List<Player> players) {
         this.canvas = canvas;
         this.players = players;
-    }
-
-    @JsonIgnore
-    public Red7Rules getRules() {
-        return rules;
-    }
-
-    public void setRules(Red7Rules rules) {
-        this.rules = rules;
     }
 
     public List<Card> getCanvas() {
@@ -44,26 +32,17 @@ public class Game {
         this.players = players;
     }
 
-    public String getRule(String color) {
-        try {
-            Method rule = Red7Rules.r7rules.get(color);
-            return (String) rule.invoke(rules, players);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-        return "An error ocuured!";
-    }
-
+    @JsonIgnore
     public String getRuleColor() {
         return canvas.get(canvas.size() - 1).getColor();
     }
 
+    @JsonIgnore
     @Override
     public String toString() {
-        return "Game{" +
+        return "GameState{" +
                 "canvas=" + canvas +
                 ", players=" + players +
-                ", rules=" + rules +
                 '}';
     }
 }

@@ -1,9 +1,8 @@
 package com.codecool.colors.Controller;
 
-import com.codecool.colors.Model.Card;
-import com.codecool.colors.Model.Game;
-import com.codecool.colors.Model.Player;
-import com.codecool.colors.Model.Red7Rules;
+import com.codecool.colors.Model.*;
+import com.codecool.colors.Service.GameService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,21 +14,26 @@ import java.util.List;
 @RestController
 public class GameController {
 
-    @PostMapping("/playAgame")
-    public String addNewGame(@RequestBody Game newGame) {
-        newGame.setRules(new Red7Rules());
-        String ruleColor = newGame.getRuleColor();
+    private GameService gameService;
 
-        return newGame.getRule(ruleColor);
+    @Autowired
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
     }
 
-    @GetMapping("/playAgame")
-    public Game getGame() {
+    @PostMapping("/playGame")
+    public String addNewGame(@RequestBody GameState newGameState) {
+        gameService.setGameState(newGameState);
+        return gameService.playGame();
+    }
+
+    @GetMapping("/playGame")
+    public GameState getGameService() {
         List<Card> cards = Arrays.asList(new Card((short)7, "yellow"), new Card((short)5, "red"));
         Player player1 = new Player("Ania", cards);
         Player player2 = new Player("Mira", cards);
-        Game newGame = new Game(cards, Arrays.asList(player1));
+        GameState newGameState = new GameState(cards, Arrays.asList(player1, player2));
 
-        return newGame;
+        return newGameState;
     }
 }
