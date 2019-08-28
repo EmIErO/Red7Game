@@ -1,6 +1,5 @@
 package com.codecool.colors.Model;
 
-import com.codecool.colors.Factory.FIFactory;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.*;
@@ -47,19 +46,6 @@ public class Player {
     @JsonIgnore
     public int getPalleteSize() {
         return palette.size();
-    }
-
-    @JsonIgnore
-    public Card getHighest() {
-        Collections.sort(palette);
-
-        return palette.get(palette.size()-1);
-    }
-
-    public Map<String, List<Card>> getAsMap() {
-        Map<String, List<Card>> map = new HashMap<>();
-        map.put(name, palette);
-        return map;
     }
 
     @Override

@@ -90,10 +90,10 @@ public class CardSelector {
             bestRun.add(pallete.get(pallete.size() - 1));
             return bestRun;
         }
-        return chooseBestRun(runs);
+        return filterRuns(runs);
     }
 
-    private List<Card> chooseBestRun(List<List<Card>> runs) {
+    private List<Card> filterRuns(List<List<Card>> runs) {
         List<Card> bestRun = runs.get(0);
         int size = runs.get(0).size();
 
@@ -120,20 +120,6 @@ public class CardSelector {
 
     private boolean cardIsHigherByOne(Card lastCard, Card thisCard) {
         return thisCard.getNumber() - lastCard.getNumber() == 1;
-    }
-
-
-    public static void main(String[] args) {
-        List<Card> cards1 = new ArrayList<>(Arrays.asList(new Card(12, "red"),
-                new Card(4, "green"),
-                new Card(2, "red"),
-                new Card(6, "yellow"),
-                new Card(8, "red"),
-                new Card(9, "yellow"),
-                new Card(3, "green")));
-        Player player1 = new Player("Ania", cards1);
-        CardSelector cs = new CardSelector();
-        cs.selectBestRun(player1);
     }
 
     static Function<Player, Card> highestCard = player -> {

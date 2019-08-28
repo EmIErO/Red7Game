@@ -82,6 +82,10 @@ public class Red7Rules {
         Map<Integer, List<Player>> result = playersWithBestCards.stream()
                 .collect(Collectors.groupingBy(fii.palleteSize));
 
+        if (result.size() == 1 && result.containsKey(0)) {
+            return null;
+        }
+
         List<Player> winners = result.entrySet().stream()
                 .sorted(Comparator.comparing(entrySet -> entrySet.getKey()))
                 .map(entrySet -> entrySet.getValue())
